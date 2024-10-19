@@ -3,8 +3,12 @@ import uvicorn
 import numpy as np
 from io import BytesIO
 from PIL import Image
+import tensorflow as tf
+
 app=FastAPI()
 
+Model = tf.keras.models.load_model('../model-pickle (1)')
+CLASS_NAMES = ['NORMAL', 'PNEUMONIA']
 @app.get('/ping')
 async def ping():
     return('hi')
