@@ -4,6 +4,7 @@ import numpy as np
 from io import BytesIO
 from PIL import Image
 import tensorflow as tf
+import requests
 
 app=FastAPI()
 
@@ -22,6 +23,16 @@ async def predict(
    file: UploadFile = File(...)  
 ):  
     image = read_file_as_image(await file.read()) 
+    img_batch = np.expand_dims(image,0)
+    predictions = Model.predict(img_batch)
+    predicted_class =CLASS_NAMES[np.argmax(predictions[0])]
+    confidence = np.max(predictions[0])
+    return {
+        'class': predicted_class,
+        'confidence': float(confidence)
+    }
+
+
     
 if __name__ == '__main__':
     uvicorn.run(app,port=8000,host='localhost')
